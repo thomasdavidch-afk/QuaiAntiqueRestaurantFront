@@ -2,7 +2,7 @@ import Route from "./Route.js";
 import { allRoutes, websiteName } from "./allRoutes.js";
 
 // Création d'une route pour la page 404 (page introuvable)
-const route404 = new Route("404", "Page introuvable", "/pages/404.html");
+const route404 = new Route("404", "Page introuvable", "/pages/404.html",[]);
 
 // Fonction pour récupérer la route correspondant à une URL donnée
 const getRouteByUrl = (url) => {
@@ -26,6 +26,23 @@ const LoadContentPage = async () => {
   const path = window.location.pathname;
   // Récupération de l'URL actuelle
   const actualRoute = getRouteByUrl(path);
+
+// Vérifier les droits d'accès à la page
+const allRolesArray = actualRoute.authorize;
+if (allRolesArray.length > 0) {
+  if (allRolesArray.includes("disconnected")) {
+    if (isConnected()) {
+      window.location.replace("/"); // Rediriger vers la page d'accueil si l'utilisateur est connecté
+    }
+  }
+  else {
+    const roleUser = getRole();
+    if (!allRolesArray.includes(roleUser)) {
+      window.location.replace("/"); // Rediriger vers la page d'accueil si l'utilisateur n'a pas les droits d'accès
+    }
+  }
+}
+
   // Récupération du contenu HTML de la route
   const html = await fetch(actualRoute.pathHtml).then((data) => data.text());
   // Ajout du contenu HTML à l'élément avec l'ID "main-page"
@@ -44,6 +61,21 @@ const LoadContentPage = async () => {
 
   // Changement du titre de la page
   document.title = actualRoute.title + " - " + websiteName;
+
+  // Afficher et masquer les éléments en fonction du role de l'utilisateur
+  showAndHideElementsForRoles();
+
+  function hideLoader() {
+  const loader = document.getElementById('loader');
+  if (loader) {
+    loader.style.display = 'none';
+    }
+  }
+
+  // Après l'appel de showAndHideElementsForRoles()
+  showAndHideElementsForRoles();
+  hideLoader();
+
 };
 
 // Fonction pour gérer les événements de routage (clic sur les liens)
@@ -62,3 +94,4 @@ window.onpopstate = LoadContentPage;
 window.route = routeEvent;
 // Chargement du contenu de la page au chargement initial
 LoadContentPage();
+
