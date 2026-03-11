@@ -14,8 +14,8 @@ jobs:
         server: ftp-quaiantiquetesttom.alwaysdata.net
         username: quaiantiquetesttom
         password: ${{ secrets.ftp_password }}
-        protocol: ftps
-        port: 21
+        protocol: ftps-legacy
+        port: 990
         security: loose
         server-dir: /www/
         exclude: | 
