@@ -14,6 +14,7 @@ jobs:
         server: ftp-quaiantiquetesttom.alwaysdata.net
         username: quaiantiquetesttom
         password: ${{ secrets.ftp_password }}
+        protocol: ftps
         server-dir: /www/
         exclude: | 
           **/.git*
