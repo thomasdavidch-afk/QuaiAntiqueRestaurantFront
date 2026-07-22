@@ -98,8 +98,8 @@ function InscrireUtilisateur(){
     myHeaders.append("Content-Type", "application/json");
 
     let raw = JSON.stringify({
-        "firstName": dataForm.get("nom"),
-        "lastName": dataForm.get("prenom"),
+        "firstName": dataForm.get("prenom"),
+        "lastName": dataForm.get("nom"),
         "email": dataForm.get("email"),
         "password": dataForm.get("mdp")
     });

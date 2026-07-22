@@ -1,47 +1,62 @@
 const mailInput = document.getElementById("EmailInput");
 const passwordInput = document.getElementById("PasswordInput");
-const btnSignin = document.getElementById("btnSignin");
 const signinForm = document.getElementById("signinForm");
 
-btnSignin.addEventListener("click", checkCredentials);
+signinForm.addEventListener("submit", checkCredentials);
 
-function checkCredentials() {
-    let dataForm = new FormData(signinForm);
+async function checkCredentials(event) {
+    event.preventDefault();
 
-    let myHeaders = new Headers();
-    myHeaders.append("Content-Type", "application/json");
+    mailInput.classList.remove("is-invalid");
+    passwordInput.classList.remove("is-invalid");
 
-    let raw = JSON.stringify({
-        "username": dataForm.get("email"),
-        "password": dataForm.get("mdp")
-    });
+    const dataForm = new FormData(signinForm);
 
-    let requestOptions = {
-        method: "POST",
-        headers: myHeaders,
-        body: raw,
-        redirect: "follow"
+    const donnees = {
+        email: dataForm.get("email"),
+        password: dataForm.get("mdp")
     };
 
-    fetch(apiUrl+"login", requestOptions)
-    .then(response => {
-        if(response.ok){
-            return response.json();
-        }
-        else{
+    try {
+        const response = await fetch(apiUrl + "login", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            },
+            body: JSON.stringify(donnees)
+        });
+
+        const result = await response.json();
+
+        if (!response.ok) {
             mailInput.classList.add("is-invalid");
-            passwordInput.classList.add("is-invalid");  
-        } 
-    })
+            passwordInput.classList.add("is-invalid");
 
-    .then(result => {
-        const token = result.apiToken;
-        setToken(token);
-        // Placer ce token en cookie
+            console.error("Erreur de connexion :", result);
+            return;
+        }
 
-        setCookie(RoleCookieName, result.roles[0], 7);
-        globalThis.location.replace("/");
-    })
+        if (!result.apiToken) {
+            console.error("Token absent dans la réponse :", result);
+            return;
+        }
 
-    .catch((error) => console.error(error));
+        setToken(result.apiToken);
+
+        let frontRole = "disconnected";
+        const roles = result.roles || [];
+
+        if (roles.includes("ROLE_ADMIN")) {
+            frontRole = "admin";
+        } else if (roles.includes("ROLE_USER")) {
+            frontRole = "clients";
+        }
+
+        setCookie(RoleCookieName, frontRole, 7);
+
+        window.location.replace("/");
+    } catch (error) {
+        console.error("Impossible de contacter l'API :", error);
+    }
 }

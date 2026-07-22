@@ -6,22 +6,22 @@
 
 <!--Formulaire de réservation-->
 <div class="container">
-    <form>
+    <form id="bookingForm">
         <div class="mb-3">
             <label for="NomInput" class="form-label">Nom</label>
-            <input disabled type="text" class="form-control" id="NomInput" placeholder="Votre nom" value="John">
+            <input disabled type="text" class="form-control" id="NomInput" placeholder="Votre nom">
         </div>
         <div class="mb-3">
             <label for="PrenomInput" class="form-label">Prénom</label>
-            <input disabled type="text" class="form-control" id="PrenomInput" placeholder="Votre prénom" value ="Doe">
+            <input disabled type="text" class="form-control" id="PrenomInput" placeholder="Votre prénom">
         </div>
         <div class="mb-3">
             <label for="AllergiesInput" class="form-label">Allergies</label>
-            <input type="text" class="form-control" id="AllergiesInput" placeholder="Vos allergies (fruits de mer, arachides...)" value="cacahuètes">
+            <input type="text" class="form-control" id="AllergiesInput" placeholder="Vos allergies (fruits de mer, arachides...)">
         </div>
         <div class="mb-3">
-            <label for="ConvivesInput" class="form-label">Nombre de convives habituel</label>
-            <input type="number" class="form-control" id="ConvivesInput" placeholder="Votre nombre de convives habituel" value="4">
+            <label for="ConvivesInput" class="form-label">Nombre de convives</label>
+            <input type="number" class="form-control" id="ConvivesInput" placeholder="Votre nombre de convives">
         </div>
         <div class="mb-3">
             <label for="DateInput" class="form-label">Date</label>
@@ -29,28 +29,22 @@
         </div>
         <div class="mb-3">
             <div class="form-check">
-                <input class="form-check-input" type="radio" name="serviceChoisi" id="midiRadio">
+                <input class="form-check-input" type="radio" name="serviceChoisi" id="midiRadio" checked>
                 <label class="form-check-label" for="midiRadio">
                     Midi
                 </label>
             </div>
             <div class="form-check">
-                <input class="form-check-input" type="radio" name="serviceChoisi" id="soirRadio" checked>
+                <input class="form-check-input" type="radio" name="serviceChoisi" id="soirRadio">
                 <label class="form-check-label" for="soirRadio">
                     Soir
                 </label>
             </div>
         </div>
         <div class="mb-3">
-            <label for="DateInput" class="form-label">Heure</label>
+            <label for="selectHour" class="form-label">Heure</label>
             <select class="form-select" id="selectHour">
-                <option>19:30</option>
-                <option>19:45</option> 
-                <option>20:00</option>
-                <option>20:15</option>
-                <option>20:30</option>
-                <option>20:45</option>
-                <option>21:00</option>
+                <!-- Les options seront générées automatiquement par le JavaScript -->
             </select>
         </div>
         <div class="text-center">
