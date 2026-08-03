@@ -104,7 +104,7 @@
 
                     <!-- Conteneur d'affichage de la carte / des plats -->
                     <div id="listePlats" class="mt-3">
-                        <!-- La liste des catégories et plats sera directement injectée ici par la fonction JS renderFoodsList -->
+                        <!-- La liste des catégories et plats sera directement injectée ici par le JS -->
                     </div>
                 </div>
             </div>
@@ -117,12 +117,88 @@
                         + Ajouter un menu
                     </button>
 
+                    <!-- Liste des menus injectée dynamiquement -->
                     <div id="adminMenuList" class="mt-3">
-                        <!-- Liste des menus injectée dynamiquement par le JS -->
+                        <!-- La liste des menus sera directement injectée ici par le JS -->
                     </div>
                 </div>
             </div>
 
+        </div>
+    </div>
+</div>
+
+<!-- ================= MODAUX DE L'ADMINISTRATION ================= -->
+
+<!-- MODAL : Ajouter / Gérer une Catégorie -->
+<div class="modal fade" id="categoryModal" tabindex="-1" aria-labelledby="categoryModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content bg-dark text-white border-light">
+            <div class="modal-header border-secondary">
+                <h5 class="modal-title text-warning" id="categoryModalLabel">Gérer / Ajouter une catégorie</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Fermer"></button>
+            </div>
+            <div class="modal-body">
+                <!-- Formulaire d'ajout -->
+                <form id="formAddCategory">
+                    <div class="mb-3">
+                        <label for="addCategoryTitle" class="form-label">Titre de la catégorie</label>
+                        <input type="text" class="form-control bg-secondary text-white border-0" id="addCategoryTitle" placeholder="Ex: Entrées, Desserts..." required>
+                    </div>
+                    <div class="text-end mt-3">
+                        <button type="submit" class="btn btn-warning w-100">Créer la catégorie</button>
+                    </div>
+                </form>
+
+                <hr class="border-secondary my-4">
+
+                <!-- Liste des catégories existantes -->
+                <h6 class="text-warning mb-3">Catégories existantes</h6>
+                <ul id="categoriesList" class="list-group">
+                    <!-- Les catégories seront injectées dynamiquement ici en JS -->
+                </ul>
+            </div>
+            <div class="modal-footer border-secondary">
+                <button type="button" class="btn btn-outline-light" data-bs-dismiss="modal">Fermer</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL : Ajouter un Plat -->
+<div class="modal fade" id="dishModal" tabindex="-1" aria-labelledby="dishModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content bg-dark text-white border-light">
+            <div class="modal-header border-secondary">
+                <h5 class="modal-title text-warning" id="dishModalLabel">Ajouter un nouveau plat</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Fermer"></button>
+            </div>
+            <div class="modal-body">
+                <form id="formAddFood">
+                    <div class="mb-3">
+                        <label for="addDishTitle" class="form-label">Titre du plat</label>
+                        <input type="text" class="form-control bg-secondary text-white border-0" id="addDishTitle" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="addDishPrice" class="form-label">Prix (€)</label>
+                        <input type="number" step="0.01" class="form-control bg-secondary text-white border-0" id="addDishPrice" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="addDishCategorySelect" class="form-label">Catégorie</label>
+                        <select class="form-select bg-secondary text-white border-0" id="addDishCategorySelect" required>
+                            <option value="">Sélectionnez une catégorie...</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="addDishDescription" class="form-label">Description</label>
+                        <textarea class="form-control bg-secondary text-white border-0" id="addDishDescription" rows="3"></textarea>
+                    </div>
+                    <div class="text-end mt-4">
+                        <button type="button" class="btn btn-outline-light me-2" data-bs-dismiss="modal">Annuler</button>
+                        <button type="submit" class="btn btn-warning">Enregistrer le plat</button>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
 </div>
@@ -150,6 +226,116 @@
                         <label for="editFoodDescription" class="form-label">Description</label>
                         <textarea class="form-control bg-secondary text-white border-0" id="editFoodDescription" rows="3"></textarea>
                     </div>
+                    <div class="text-end mt-4">
+                        <button type="button" class="btn btn-outline-light me-2" data-bs-dismiss="modal">Annuler</button>
+                        <button type="submit" class="btn btn-warning">Enregistrer les modifications</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL : Ajouter un Menu -->
+<div class="modal fade" id="menuModal" tabindex="-1" aria-labelledby="menuModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content bg-dark text-white border-light">
+            <div class="modal-header border-secondary">
+                <h5 class="modal-title text-warning" id="menuModalLabel">Ajouter un menu</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Fermer"></button>
+            </div>
+            <div class="modal-body">
+                <form id="formAddMenu">
+                    <!-- Titre du menu -->
+                    <div class="mb-3">
+                        <label for="addMenuTitle" class="form-label">Titre du menu</label>
+                        <input type="text" class="form-control bg-secondary text-white border-0" id="addMenuTitle" placeholder="Ex: Menu Gourmand, Menu du Midi..." required>
+                    </div>
+
+                    <!-- Prix du menu -->
+                    <div class="mb-3">
+                        <label for="addMenuPrice" class="form-label">Prix (€)</label>
+                        <input type="number" step="0.01" class="form-control bg-secondary text-white border-0" id="addMenuPrice" placeholder="Ex: 24.50" required>
+                    </div>
+
+                    <!-- Sélection de l'Entrée -->
+                    <div class="mb-3">
+                        <label for="addMenuEntreeSelect" class="form-label">Entrée</label>
+                        <select class="form-select bg-secondary text-white border-0" id="addMenuEntreeSelect" required>
+                            <option value="">-- Sélectionner une entrée --</option>
+                        </select>
+                    </div>
+
+                    <!-- Sélection du Plat principal -->
+                    <div class="mb-3">
+                        <label for="addMenuPlatSelect" class="form-label">Plat principal</label>
+                        <select class="form-select bg-secondary text-white border-0" id="addMenuPlatSelect" required>
+                            <option value="">-- Sélectionner un plat principal --</option>
+                        </select>
+                    </div>
+
+                    <!-- Sélection du Dessert -->
+                    <div class="mb-3">
+                        <label for="addMenuDessertSelect" class="form-label">Dessert</label>
+                        <select class="form-select bg-secondary text-white border-0" id="addMenuDessertSelect" required>
+                            <option value="">-- Sélectionner un dessert --</option>
+                        </select>
+                    </div>
+
+                    <div class="text-end mt-4">
+                        <button type="button" class="btn btn-outline-light me-2" data-bs-dismiss="modal">Annuler</button>
+                        <button type="submit" class="btn btn-warning">Créer le menu</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL : Modifier un Menu -->
+<div class="modal fade" id="editMenuModal" tabindex="-1" aria-labelledby="editMenuModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content bg-dark text-white border-light">
+            <div class="modal-header border-secondary">
+                <h5 class="modal-title text-warning" id="editMenuModalLabel">Modifier le menu</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Fermer"></button>
+            </div>
+            <div class="modal-body">
+                <form id="editMenuForm">
+                    <input type="hidden" id="editMenuId">
+                    <div class="mb-3">
+                        <label for="editMenuTitle" class="form-label">Titre du menu</label>
+                        <input type="text" class="form-control bg-secondary text-white border-0" id="editMenuTitle" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="editMenuPrice" class="form-label">Prix du menu (€)</label>
+                        <input type="number" step="0.01" class="form-control bg-secondary text-white border-0" id="editMenuPrice" required>
+                    </div>
+
+                    <!-- Sélection de l'Entrée -->
+                    <div class="mb-3">
+                        <label for="editMenuEntreeSelect" class="form-label">Entrée</label>
+                        <select class="form-select bg-secondary text-white border-0" id="editMenuEntreeSelect" required>
+                            <option value="">-- Sélectionner une entrée --</option>
+                        </select>
+                    </div>
+
+                    <!-- Sélection du Plat principal -->
+                    <div class="mb-3">
+                        <label for="editMenuPlatSelect" class="form-label">Plat principal</label>
+                        <select class="form-select bg-secondary text-white border-0" id="editMenuPlatSelect" required>
+                            <option value="">-- Sélectionner un plat principal --</option>
+                        </select>
+                    </div>
+
+                    <!-- Sélection du Dessert -->
+                    <div class="mb-3">
+                        <label for="editMenuDessertSelect" class="form-label">Dessert</label>
+                        <select class="form-select bg-secondary text-white border-0" id="editMenuDessertSelect" required>
+                            <option value="">-- Sélectionner un dessert --</option>
+                        </select>
+                    </div>
+
                     <div class="text-end mt-4">
                         <button type="button" class="btn btn-outline-light me-2" data-bs-dismiss="modal">Annuler</button>
                         <button type="submit" class="btn btn-warning">Enregistrer les modifications</button>
