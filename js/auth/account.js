@@ -15,6 +15,7 @@ const containerPlats = document.getElementById("listePlats") || document.getElem
 
 // Variable globale pour stocker l'ID du restaurant à modifier
 let currentRestaurantId = null;
+let currentRestaurantUuid = null;
 
 // Variable globale pour stocker la liste de TOUS les plats enregistrés en BDD
 let allAvailableFoods = [];
@@ -162,6 +163,10 @@ async function getRestaurantConfig() {
 
             currentRestaurantId = config.id;
 
+            currentRestaurantUuid = config.uuid || config.id || null;
+            
+            console.log("currentRestaurantUuid assigné :", currentRestaurantUuid);
+
             if (inputMaxConvives) inputMaxConvives.value = config.maxConvives ?? config.maxGuest ?? "";
             if (inputHoraireMidi) inputHoraireMidi.value = config.horaireMidi ?? config.amOpeningTime ?? "";
             if (inputHoraireSoir) inputHoraireSoir.value = config.horaireSoir ?? config.pmOpeningTime ?? "";
@@ -179,17 +184,19 @@ if (formRestaurantInfo) {
         event.preventDefault();
 
         const token = getToken();
-
         if (!token) {
             window.location.href = "/signin";
             return;
         }
 
-        if (!currentRestaurantId) {
+        // On vérifie qu'on a bien un ID ou UUID
+        const targetId = currentRestaurantId || currentRestaurantUuid; // 👈 Utilise l'ID numérique (ex: 1)
+        if (!targetId) {
             alert("Aucun restaurant à modifier en base de données.");
             return;
         }
 
+        // Attention : ton contrôleur 'edit' attend 'maxGuest', 'amOpeningTime', 'pmOpeningTime'
         const configData = {
             maxGuest: parseInt(inputMaxConvives.value) || 0,
             amOpeningTime: inputHoraireMidi.value,
@@ -197,25 +204,24 @@ if (formRestaurantInfo) {
         };
 
         try {
-            const response = await fetch(apiUrl + "restaurant/" + currentRestaurantId, {
+            const response = await fetch(`${apiUrl}restaurant/${targetId}`, {
                 method: "PUT",
                 headers: {
-                    "X-AUTH-TOKEN": token,
+                    "Content-Type": "application/json",
                     "Accept": "application/json",
-                    "Content-Type": "application/json"
+                    "X-AUTH-TOKEN": token
                 },
                 body: JSON.stringify(configData)
             });
 
-            if (!response.ok) {
-                throw new Error("Erreur lors de la mise à jour de la configuration");
+            if (response.ok || response.status === 204) {
+                alert("Configuration du restaurant mise à jour avec succès !");
+            } else {
+                alert("Erreur lors de la mise à jour.");
             }
-
-            alert("Les informations du restaurant ont été mises à jour avec succès !");
-
         } catch (error) {
             console.error(error);
-            alert("Erreur lors de la mise à jour des informations du restaurant.");
+            alert("Une erreur est survenue lors de la mise à jour.");
         }
     });
 }
@@ -747,9 +753,50 @@ function renderMenuList(menus) {
         const priceFormatted = (rawPrice > 100 ? rawPrice / 100 : rawPrice).toFixed(2);
         const menuIdentifier = menu.uuid || menu.id;
 
-        const starter = menu.starter || menu.entree || "Entrée non spécifiée";
-        const mainCourse = menu.mainCourse || menu.plat || "Plat principal non spécifié";
-        const dessert = menu.dessert || "Dessert non spécifié";
+        let starter = "Entrée non spécifiée";
+        let mainCourse = "Plat principal non spécifié";
+        let dessert = "Dessert non spécifié";
+
+        let starterId = "";
+        let mainCourseId = "";
+        let dessertId = "";
+
+        if (Array.isArray(menu.foods) && menu.foods.length > 0) {
+            menu.foods.forEach(food => {
+                // On récupère le nom du plat (title ou name)
+                const foodTitle = food.title || food.name || "Plat";
+                const foodId = food.uuid || food.id;
+                
+                // On récupère le nom de la catégorie si elle existe
+                const categoryName = (food.category?.title || food.category?.name || food.category || "").toLowerCase();
+
+                if (categoryName.includes("entr") || categoryName.includes("starter")) {
+                    starter = foodTitle;
+                    starterId = foodId;
+                } else if (categoryName.includes("plat") || categoryName.includes("main")) {
+                    mainCourse = foodTitle;
+                    mainCourseId = foodId;
+                } else if (categoryName.includes("dessert")) {
+                    dessert = foodTitle;
+                    dessertId = foodId;
+                }
+            });
+
+            // Si aucune catégorie n'a matché (ex: category non sérialisée par Symfony),
+            // on assigne tout simplement les plats dans l'ordre d'apparition [0], [1], [2] :
+            if (starter === "Entrée non spécifiée" && menu.foods[0]) {
+                starter = menu.foods[0].title || menu.foods[0].name || starter;
+                starterId = menu.foods[0].uuid || menu.foods[0].id || "";
+            }
+            if (mainCourse === "Plat principal non spécifié" && menu.foods[1]) {
+                mainCourse = menu.foods[1].title || menu.foods[1].name || mainCourse;
+                mainCourseId = menu.foods[1].uuid || menu.foods[1].id || "";
+            }
+            if (dessert === "Dessert non spécifié" && menu.foods[2]) {
+                dessert = menu.foods[2].title || menu.foods[2].name || dessert;
+                dessertId = menu.foods[2].uuid || menu.foods[2].id || "";
+            }
+        }
 
         html += `
             <div class="col-md-6 col-lg-4 mb-4">
@@ -770,9 +817,9 @@ function renderMenuList(menus) {
                                 data-id="${menuIdentifier}"
                                 data-title="${menu.title || ''}"
                                 data-price="${priceFormatted}"
-                                data-starter="${starter}"
-                                data-main="${mainCourse}"
-                                data-dessert="${dessert}">
+                                data-starter-id="${starterId}"
+                                data-main-id="${mainCourseId}"
+                                data-dessert-id="${dessertId}">
                             <i class="bi bi-pencil"></i> Modifier
                         </button>
                         <button class="btn btn-sm btn-outline-danger delete-menu-btn" data-id="${menuIdentifier}">
@@ -831,11 +878,6 @@ if (formAddMenu) {
         const token = getToken();
         if (!token) return window.location.href = "/signin";
 
-        if (!currentRestaurantId) {
-            alert("Impossible de créer le menu : Identifiant du restaurant indisponible.");
-            return;
-        }
-
         const title = document.getElementById("addMenuTitle").value;
         const priceInput = document.getElementById("addMenuPrice").value.replace(",", ".");
         const priceEuros = parseFloat(priceInput) || 0;
@@ -845,13 +887,12 @@ if (formAddMenu) {
         const mainUuid = document.getElementById("addMenuPlatSelect").value;
         const dessertUuid = document.getElementById("addMenuDessertSelect").value;
 
-        // Construire le tableau des UUIDs de plats sélectionnés
         const foodUuids = [starterUuid, mainUuid, dessertUuid].filter(uuid => uuid !== "");
 
+        // Plus besoin de s'inquiéter si currentRestaurantUuid est null !
         const payload = {
             title: title,
             price: priceCents,
-            restaurantUuid: currentRestaurantId,
             foodUuids: foodUuids
         };
 
@@ -871,17 +912,18 @@ if (formAddMenu) {
                 formAddMenu.reset();
 
                 const modalEl = document.getElementById("menuModal");
-                const modal = bootstrap.Modal.getInstance(modalEl);
-                if (modal) modal.hide();
+                if (modalEl) {
+                    const modal = bootstrap.Modal.getInstance(modalEl);
+                    if (modal) modal.hide();
+                }
 
-                getMenus();
+                if (typeof getMenus === "function") getMenus();
             } else {
                 const errorData = await response.json().catch(() => null);
-                alert("Erreur lors de la création : " + (errorData?.error || errorData?.message || "Erreur serveur"));
+                alert("Erreur : " + (errorData?.error || errorData?.message || "Erreur lors de la création du menu"));
             }
         } catch (error) {
             console.error("Erreur réseau :", error);
-            alert("Erreur de connexion lors de la création du menu.");
         }
     });
 }
