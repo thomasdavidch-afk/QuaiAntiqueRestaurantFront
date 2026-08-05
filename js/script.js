@@ -3,7 +3,9 @@ const signoutBtn = document.getElementById("signout-btn");
 const RoleCookieName = "role";
 const apiUrl = "http://127.0.0.1:8000/api/";
 
-signoutBtn.addEventListener("click", signout);
+if (signoutBtn) {
+    signoutBtn.addEventListener("click", signout);
+}
 
 function getRole() {
     return getCookie(RoleCookieName);
@@ -130,3 +132,48 @@ function getInfosUser() {
         })
         .catch(error =>{ console.error("Erreur lors de la récupération des informations utilisateur :", error)});
 }
+
+// --------------------------------------------------------
+// Chargement dynamique des horaires dans le footer
+// --------------------------------------------------------
+
+async function loadFooterSchedules() {
+    const schedulesEl = document.getElementById("footer-schedules");
+    if (!schedulesEl) return;
+
+    try {
+        // On appelle la route /api/restaurant/config définie dans votre controller
+        const response = await fetch(apiUrl + "restaurant/config", {
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        });
+
+        if (response.ok) {
+            const data = await response.json();
+
+            // Vérifier si des horaires ont été trouvés (le controller renvoie '' si vide)
+            const horaireMidi = data.horaireMidi ? data.horaireMidi : "Fermé le midi";
+            const horaireSoir = data.horaireSoir ? data.horaireSoir : "Fermé le soir";
+
+            // Formatage de l'affichage pour le footer
+            const horairesHtml = `
+                Midi : ${sanitizeHtml(horaireMidi)} <br>
+                Soir : ${sanitizeHtml(horaireSoir)}
+            `;
+            
+            schedulesEl.innerHTML = horairesHtml;
+
+        } else {
+            console.error("Erreur serveur lors de la récupération de la configuration du restaurant.");
+        }
+    } catch (error) {
+        console.error("Erreur lors de la récupération des horaires pour le footer :", error);
+    }
+}
+
+// Déclenchement de la fonction une fois que tout le HTML est chargé
+document.addEventListener("DOMContentLoaded", () => {
+    loadFooterSchedules();
+});

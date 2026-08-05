@@ -1,63 +1,78 @@
-<div class="hero-scene text-center text-white">
-    <div class="hero-scene-content"> 
-        <p>Le chef Arnaud Michant vous invite au</p>
-        <h1>Quai Antique</h1>
-        <a href="/reserver" class="btn btn-primary">Réserver</a>
+<!-- Hero Scene Réimaginé -->
+<div class="hero-scene text-center text-white d-flex align-items-center justify-content-center min-vh-75 position-relative">
+    <div class="hero-scene-content p-4 rounded-4 backdrop-blur"> 
+        <span class="text-uppercase tracking-wide text-warning fw-semibold fs-6 mb-2 d-block">Le chef Arnaud Michant vous invite au</span>
+        <h1 class="display-2 fw-bold font-serif mb-4">Quai Antique</h1>
+        <a href="/reserver" class="btn btn-primary btn-lg rounded-pill px-4 shadow">Réserver une table</a>
     </div>
 </div>
 
-<section>
-    <article>
-        <div class="container p-4">
-            <h2 class="text-center text-primary">Bienvenue au Quai Antique</h2>
-            <div class="row row-cols-2 align-items-center">
-                <div class="col">
-                    <p class="text-justify">
-                        Bienvenue sur le site de notre restaurant gastronomique situé au coeur de la magnifique ville de Chambéry. Le chef Arnaut Michant vous invite à découvrir un voyage culinaire mémorable.
+<section class="home-sections">
+    <!-- Section 1 : Bienvenue -->
+    <article class="py-5 bg-light">
+        <div class="container py-4">
+            <div class="row row-cols-1 row-cols-md-2 align-items-center g-4 g-lg-5">
+                <div class="col order-2 order-md-1">
+                    <span class="text-primary text-uppercase fw-bold small tracking-wider">Gastronomie & Passion</span>
+                    <h2 class="display-6 font-serif fw-bold my-3">Bienvenue au Quai Antique</h2>
+                    <p class="lead text-muted">
+                        Bienvenue sur le site de notre restaurant gastronomique situé au cœur de la magnifique ville de Chambéry. Le chef Arnaud Michant vous invite à découvrir un voyage culinaire mémorable.
                     </p>
+                    <div class="pt-3">
+                        <a href="/carte" class="btn btn-outline-primary btn-lg rounded-pill px-4">Découvrir nos menus</a>
+                    </div>
                 </div>
-                <div class="col">
-                    <img class="w-100 rounded"src="../images/chef.jpg"/>
+                <div class="col order-1 order-md-2">
+                    <div class="img-wrapper shadow-lg rounded-4 overflow-hidden">
+                        <img class="w-100 object-fit-cover hover-zoom" src="../images/chef.jpg" alt="Chef Arnaud Michant"/>
+                    </div>
                 </div>
-            </div>
-            <div class="text-center pt-4">
-                <a href="/carte" class="btn btn-primary">Nos menus</a>
             </div>
         </div>
     </article>
-    <article class="bg-black text-white">
-        <div class="container p-4">
-            <h2 class="text-center text-primary">Des produits frais</h2>
-            <div class="row row-cols-2 align-items-center">
+
+    <!-- Section 2 : Produits frais -->
+    <article class="bg-dark text-white py-5">
+        <div class="container py-4">
+            <div class="row row-cols-1 row-cols-md-2 align-items-center g-4 g-lg-5">
                 <div class="col">
-                    <img class="w-100 rounded"src="../images/saumon.jpg"/>
+                    <div class="img-wrapper shadow-lg rounded-4 overflow-hidden border border-secondary border-opacity-25">
+                        <img class="w-100 object-fit-cover hover-zoom" src="../images/saumon.jpg" alt="Plat de saumon frais"/>
+                    </div>
                 </div>
                 <div class="col">
-                    <p class="text-justify">
-                        Découvrez la richesse des saveurs avec nos plats élaborés à partir de produits frais et de saison, cueillis localement.
+                    <span class="text-warning text-uppercase fw-bold small tracking-wider">Savoir-faire local</span>
+                    <h2 class="display-6 font-serif fw-bold text-white my-3">Des produits frais & de saison</h2>
+                    <p class="lead text-light opacity-75">
+                        Découvrez la richesse des saveurs avec nos plats élaborés à partir de produits frais et de saison, sélectionnés avec soin auprès de nos producteurs régionaux.
                     </p>
+                    <div class="pt-3">
+                        <a href="/galerie" class="btn btn-warning btn-lg rounded-pill px-4 text-dark fw-semibold">Voir la galerie</a>
+                    </div>
                 </div>
-            </div>
-            <div class="text-center pt-4">
-                <a href="/galerie" class="btn btn-primary">Voir la galerie</a>
             </div>
         </div>
     </article>
-    <article>
-        <div class="container p-4">
-            <h2 class="text-center text-primary">Réservation en ligne</h2>
-            <div class="row row-cols-2 align-items-center">
-                <div class="col">
-                    <p class="text-justify">
-                        Vous pouvez directement réserver votre table sur ce site ! Il suffit de cliquer sur le bouton ci-dessous.
+
+    <!-- Section 3 : Réservation -->
+    <article class="py-5 bg-light">
+        <div class="container py-4">
+            <div class="row row-cols-1 row-cols-md-2 align-items-center g-4 g-lg-5">
+                <div class="col order-2 order-md-1">
+                    <span class="text-primary text-uppercase fw-bold small tracking-wider">À votre service</span>
+                    <h2 class="display-6 font-serif fw-bold my-3">Réservation en ligne</h2>
+                    <p class="lead text-muted">
+                        Réservez votre table en quelques clics pour vous assurer de vivre une expérience culinaire inoubliable au cœur de Chambéry.
                     </p>
+                    <div class="pt-3">
+                        <a href="/reserver" class="btn btn-primary btn-lg rounded-pill px-4 shadow">Réserver maintenant</a>
+                    </div>
                 </div>
-                <div class="col">
-                    <img class="w-100 rounded"src="../images/vins.jpg"/>
+                <div class="col order-1 order-md-2">
+                    <div class="img-wrapper shadow-lg rounded-4 overflow-hidden">
+                        <img class="w-100 object-fit-cover hover-zoom" src="../images/vins.jpg" alt="Sélection de vins"/>
+                    </div>
                 </div>
-            </div>
-            <div class="text-center pt-4">
-                <a href="/reserver" class="btn btn-primary">Réserver</a>
             </div>
         </div>
     </article>
